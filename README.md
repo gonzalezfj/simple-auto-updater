@@ -15,7 +15,6 @@ git archive --output=file.zip HEAD $(git diff --name-only SHA1 SHA2)
 ##Dependencias
 ```
 auto-updater@1.0.0
-│ C:\Users\ServicioTC\Documents\FACUNDO\simple-auto-updater
 │ Self auto updates mechanism git based
 │ https://github.com/gonzalezfj/simple-auto-updater
 │ https://github.com/gonzalezfj/simple-auto-updater
