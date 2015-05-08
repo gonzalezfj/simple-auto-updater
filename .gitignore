@@ -27,4 +27,4 @@ build/Release
 node_modules
 
 # Visual Studio code settings
-.setting
+.settings
