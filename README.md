@@ -3,7 +3,7 @@ Es un pequeño script para hacer actualizaciones automáticas, pensado para corr
 
 ##Como funciona?
 
-##Cliente
+###Cliente
 Verifica la versión en el package.json contra un json de un servidor, luego baja el zip por medio de http y lo descomprime en la carpeta indicada, sobreescribiendo los últimos cambios.
 
 ### Servidor
