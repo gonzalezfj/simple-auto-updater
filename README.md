@@ -15,8 +15,6 @@ git archive --output=file.zip HEAD $(git diff --name-only SHA1 SHA2)
 ##Dependencias
 ```
 auto-updater@1.0.0
-│ Self auto updates mechanism git based
-│ https://github.com/gonzalezfj/simple-auto-updater
 │ https://github.com/gonzalezfj/simple-auto-updater
 ├── adm-zip@0.4.7 (git://github.com/cthackers/adm-zip.git#eeb763317092232b73f4adb5c25d1f63e7b33db6)
 │   A Javascript implementation of zip for nodejs. Allows user to create or extract zip files both in memory or to/from disk

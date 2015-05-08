@@ -1,7 +1,7 @@
 {
   "name": "auto-updater",
   "version": "1.0.0",
-  "description": "Self auto updates mechanism git based",
+  "description": "Es un pequenio script para hacer actualizaciones automaticas, pensado para correr en nw.js sobre linux, OSX y windows",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
