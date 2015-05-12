@@ -2,7 +2,9 @@
 ///<reference path="typings/q.d.ts" />
 var request = require('request');
 var Q = require('Q');
-
+/**
+ * Retorna un json de la ´version_url´
+ */
 function checkNewVersion(version_url) {
 	var defer = Q.defer();
     /**
@@ -15,7 +17,11 @@ function checkNewVersion(version_url) {
         body += chunk;
     })
     .on('end', function() {           
-        var result = JSON.parse(body);
+        try{
+            var result = JSON.parse(body);
+        }catch(e){
+            defer.reject(e);
+        }
         defer.resolve(result);
     })
     .on('error', function(e) {
