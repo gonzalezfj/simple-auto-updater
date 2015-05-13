@@ -1,3 +1,4 @@
+///<reference path="typings/node/node.d.ts" />
 var version_getter = require('./checkNewVersion.js');	
 var zip_getter = require('./getZIP.js');	
 var path  = require('path');
@@ -39,7 +40,7 @@ function comparar_version() {
 }
 
 function descomprimir() {
-	var zipTempPath = path.join(__dirname ,'../temp/newVersion.zip');
+	var zipTempPath = path.join(__dirname ,'./new' + self.local.version + '.zip');
 	zip_getter.getZip(self.options.package_zip_url,zipTempPath)
 		.then(function (zip) {
 			zip.extractAllToAsync(self.options.installDir, true, function (error) {

@@ -29,6 +29,4 @@ node_modules
 # Visual Studio code settings
 .settings
 #
-example
-test
-install
+example_app
