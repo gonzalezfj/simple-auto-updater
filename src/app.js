@@ -3,16 +3,17 @@ var zip_getter = require('./getZIP.js');
 var path  = require('path');
 var speed_formatter = require('./bandwitdhSpeedHuman.js');
 var nconf = require('nconf');
+var fs = require('fs');
 
 nconf.use('file', { file: path.join(__dirname, 'config.json') });
 
 var self = this;
 
 self.options = {
-	local_package_json: nconf.get('local_package_json'),
+	local_package_json: path.join(__dirname, nconf.get('local_package_json')),
 	remote_url_package_json: nconf.get('remote_url_package_json'),
 	package_zip_url: nconf.get('package_zip_url'),
-	installDir: nconf.get('installDir')
+	installDir: path.join(__dirname, nconf.get('installDir'))
 };
 
 function init(params) {
@@ -38,9 +39,11 @@ function comparar_version() {
 }
 
 function descomprimir() {
-	zip_getter.getZip(self.options.package_zip_url,'../temp/facu.zip')
+	var zipTempPath = path.join(__dirname ,'../temp/newVersion.zip');
+	zip_getter.getZip(self.options.package_zip_url,zipTempPath)
 		.then(function (zip) {
 			zip.extractAllToAsync(self.options.installDir, true, function (error) {
+				borrarZip(zipTempPath);
 				if(error) console.log(error);
 			});
 		},function (error) {
@@ -50,5 +53,11 @@ function descomprimir() {
 		    console.log("Speed: " + speed_formatter.toHuman(progress.speed));
 		});	
 }
-
+function borrarZip(zipTempPath) {
+	fs.unlink(zipTempPath, function (err) {
+		if (err) {
+			console.log(err);
+		}
+	});
+}
 init();

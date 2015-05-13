@@ -34,10 +34,10 @@ var getHTTPZip = function(zip_url,zip_path) {
     var file_url = zip_url;
     var defer = Q.defer();
     progress(request(file_url))
-    .pipe(fs.createWriteStream(zip_path))
     .on('progress', onProgress)
     .on('end', endPetition)
-    .on('error', onError);
+    .on('error', onError)
+    .pipe(fs.createWriteStream(zip_path));
     
     return defer.promise;
     /**
