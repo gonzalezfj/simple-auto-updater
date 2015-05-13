@@ -5,60 +5,91 @@ var path  = require('path');
 var speed_formatter = require('./bandwitdhSpeedHuman.js');
 var nconf = require('nconf');
 var fs = require('fs');
-
-nconf.use('file', { file: path.join(__dirname, 'config.json') });
+var Q = require('Q');
 
 var self = this;
-
-self.options = {
-	local_package_json: path.join(__dirname, nconf.get('local_package_json')),
-	remote_url_package_json: nconf.get('remote_url_package_json'),
-	package_zip_url: nconf.get('package_zip_url'),
-	installDir: path.join(__dirname, nconf.get('installDir'))
+/**
+ * Inicializa las opciones de configuración
+ */
+function init(file_config) {
+	var defer = Q.defer();
+	try {		
+		var _file_config = file_config || './config.json';
+		nconf.use('file', { file: path.join(__dirname, _file_config ) });	
+		self.options = {
+			local_package_json: path.join(__dirname, nconf.get('local_package_json')),
+			remote_url_package_json: nconf.get('remote_url_package_json'),
+			package_zip_url: nconf.get('package_zip_url'),
+			installDir: path.join(__dirname, nconf.get('installDir'))
+		};
+		defer.resolve();
+	} catch (error) {
+		return defer.reject(error);
+	}
+	return defer.promise;
 };
-
-function init(params) {
-	//CHECK LOCAL VERSION
-	self.local = require(self.options.local_package_json);
-	console.log("Local version", self.local.version);		
+/**
+ * Compara la versión local con la del servidor
+ */
+function comparar_versiones() {
+	var defer = Q.defer();
+	try {
+		//CHECK LOCAL VERSION
+		self.local = require(self.options.local_package_json);
+		console.log("Local version", self.local.version);	
+	} catch (error) {
+		return defer.reject(error);		
+	}	
 	//CHECK REMOTE VERSION	
-	comparar_version();
-};
-
-function comparar_version() {
 	version_getter.checkNewVersion(self.options.remote_url_package_json)
 	.then(function (remote) {
 		console.log("Remote version: ", remote.version);
 		console.log("New version result: ", remote.version > self.local.version);
 		if(remote.version > self.local.version)
 		{
-			descomprimir();
-		}		
+			return defer.resolve(true);
+		}else{
+			return defer.resolve(false);
+		}
 	}, function (error) {
-	    console.error(error);
+		return defer.reject(error);
 	});
+	return defer.promise;
 }
-
+/**
+ * Descarga y Descomprime la nueva versión
+ */
 function descomprimir() {
+	var defer = Q.defer();
 	var zipTempPath = path.join(__dirname ,'./new' + self.local.version + '.zip');
 	zip_getter.getZip(self.options.package_zip_url,zipTempPath)
 		.then(function (zip) {
 			zip.extractAllToAsync(self.options.installDir, true, function (error) {
-				borrarZip(zipTempPath);
-				if(error) console.log(error);
+				defer.resolve(borrarZip(zipTempPath));
+				if(error) defer.reject(error);
 			});
 		},function (error) {
-			console.log(error);
+			defer.reject(error);
 		}, function (progress) {
+			defer.notify({
+				percent: progress.percent,
+				formated_speed: speed_formatter.toHuman(progress.speed)
+			});
 		    console.log("percent: " + progress.percent);
 		    console.log("Speed: " + speed_formatter.toHuman(progress.speed));
 		});	
+	return defer.promise;
 }
 function borrarZip(zipTempPath) {
-	fs.unlink(zipTempPath, function (err) {
-		if (err) {
-			console.log(err);
+	var defer = Q.defer();
+	fs.unlink(zipTempPath, function (error) {
+		defer.resolve();
+		if (error) {
+			defer.reject(error);
 		}
 	});
+	return defer.promise;
 }
-init();
+module.exports.Init = init;
+module.exports.comparar_versiones = comparar_versiones;
+module.exports.descomprimir = descomprimir;
