@@ -35,16 +35,13 @@ function comparar_versiones() {
 	var defer = Q.defer();
 	try {
 		//CHECK LOCAL VERSION
-		self.local = require(self.options.local_package_json);
-		console.log("Local version", self.local.version);	
+		self.local = require(self.options.local_package_json);	
 	} catch (error) {
 		return defer.reject(error);		
 	}	
 	//CHECK REMOTE VERSION	
 	version_getter.checkNewVersion(self.options.remote_url_package_json)
 	.then(function (remote) {
-		console.log("Remote version: ", remote.version);
-		console.log("New version result: ", remote.version > self.local.version);
 		if(remote.version > self.local.version)
 		{
 			return defer.resolve(true);
@@ -75,8 +72,6 @@ function descomprimir() {
 				percent: progress.percent,
 				formated_speed: speed_formatter.toHuman(progress.speed)
 			});
-		    console.log("percent: " + progress.percent);
-		    console.log("Speed: " + speed_formatter.toHuman(progress.speed));
 		});	
 	return defer.promise;
 }
