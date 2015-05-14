@@ -7,7 +7,7 @@ var nconf = require('nconf');
 var fs = require('fs');
 var Q = require('Q');
 
-var self = this;
+var options, local;
 /**
  * Inicializa las opciones de configuración
  */
@@ -16,7 +16,7 @@ function init(file_config) {
 	try {		
 		var _file_config = file_config || './config.json';
 		nconf.use('file', { file: path.join(__dirname, _file_config ) });	
-		self.options = {
+		options = {
 			local_package_json: path.join(__dirname, nconf.get('local_package_json')),
 			remote_url_package_json: nconf.get('remote_url_package_json'),
 			package_zip_url: nconf.get('package_zip_url'),
@@ -35,14 +35,14 @@ function comparar_versiones() {
 	var defer = Q.defer();
 	try {
 		//CHECK LOCAL VERSION
-		self.local = require(self.options.local_package_json);	
+		local = require(options.local_package_json);	
 	} catch (error) {
 		return defer.reject(error);		
 	}	
 	//CHECK REMOTE VERSION	
-	version_getter.checkNewVersion(self.options.remote_url_package_json)
+	version_getter.checkNewVersion(options.remote_url_package_json)
 	.then(function (remote) {
-		if(remote.version > self.local.version)
+		if(remote.version > local.version)
 		{
 			return defer.resolve(true);
 		}else{
@@ -58,10 +58,10 @@ function comparar_versiones() {
  */
 function descomprimir() {
 	var defer = Q.defer();
-	var zipTempPath = path.join(__dirname ,'./new' + self.local.version + '.zip');
-	zip_getter.getZip(self.options.package_zip_url,zipTempPath)
-		.then(function (zip) {
-			zip.extractAllToAsync(self.options.installDir, true, function (error) {
+	var zipTempPath = path.join(__dirname ,'./new' + local.version + '.zip');
+	zip_getter.getZip(options.package_zip_url,zipTempPath)
+	.then(function (zip) {
+			zip.extractAllToAsync(options.installDir, true, function (error) {
 				defer.resolve(borrarZip(zipTempPath));
 				if(error) defer.reject(error);
 			});
@@ -75,6 +75,9 @@ function descomprimir() {
 		});	
 	return defer.promise;
 }
+function abortar(){
+	zip_getter.abort();
+}
 function borrarZip(zipTempPath) {
 	var defer = Q.defer();
 	fs.unlink(zipTempPath, function (error) {
@@ -86,5 +89,6 @@ function borrarZip(zipTempPath) {
 	return defer.promise;
 }
 module.exports.Init = init;
+module.exports.abortar = abortar;
 module.exports.comparar_versiones = comparar_versiones;
 module.exports.descomprimir = descomprimir;

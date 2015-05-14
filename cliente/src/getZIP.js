@@ -27,19 +27,26 @@ var getHTTPZip = function(zip_url,zip_path) {
      * Scope extend
      */
     var self = this;
-    self.time_start = new Date();
+    self.time_start = new Date();    
+    var peticion_actual;
     /**
      * Opciones de petición http
      */
     var file_url = zip_url;
     var defer = Q.defer();
-    progress(request(file_url))
-    .on('progress', onProgress)
+    peticion_actual = progress(request(file_url));
+    peticion_actual.on('progress', onProgress)
     .on('end', endPetition)
     .on('error', onError)
     .pipe(fs.createWriteStream(zip_path));
     
     return defer.promise;
+    /**
+     * Finaliza abruptamente la descarga actual
+     */
+    self.abort = function () {
+        peticion_actual.abort();
+    }
     /**
      * Indica el progeso de la descarga
      */
