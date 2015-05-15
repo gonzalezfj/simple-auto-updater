@@ -74,7 +74,7 @@ function descomprimir() {
 		}, function (progress) {
 			defer.notify({
 				percent: progress.percent,
-				formated_speed: speed_formatter.toHuman(progress.speed),
+				formatted_speed: speed_formatter.toHuman(progress.speed),
 				remaining_time: progress.remaining_time
 			});
 		});	
