@@ -27,22 +27,38 @@ auto-updater@1.0.0
 +-- unit.js@2.0.0
 ```
 ## Como empezar
+Bajando el paquete con npm
 ```
 npm install simple-auto-updater
+```
+Un simple ejemplo
+```
+var updater = require('simple-auto-updater');
 
-var updater = require(process.cwd() + '/src/app.js')
-updater.Init()
+updater.Init();
+//Verficar por una nueva version
 .then(updater.comparar_versiones)
-.then(function(result){            
-    if(result) 
-    {
-	console.log("nueva version");
-	updater.descomprimir().then(function(){
-	    console.log("descomprimido con exito C :")
-	});
-    }else{ 
-	console.log("ya esta en la ultima version");
+.then(function(resultado){
+    //Una nueva version esta disponible
+    if(resultado){
+        //Descarga y descomprime el paquete
+        updater.descomprimir().then(function(){
+            console.log("actualizado con éxito");
+        },function(e){
+            console.log(e);//algo salió mal
+        },function(progress){
+            /**
+            * progress.percent (porcentaje descargado actualmente)
+            * progress.remaining_time (tiempo restante de la descarga)
+            * progress.formatted_speed (velocidad actual en formato legible -  B/s,KB/s,MB/s, and so on)
+            */
+            console.log(progress); 
+        })
+        .done();
     }
 });
+
+//Con este metodo se puede cancelar la descarga en cualquier momento
+updater.abortar();
 
 ```
