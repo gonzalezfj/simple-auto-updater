@@ -7,7 +7,7 @@ var nconf = require('nconf');
 var fs = require('fs');
 var Q = require('Q');
 
-var options, local;
+var options,peticion_actual, local;
 /**
  * Inicializa las opciones de configuración
  */
@@ -59,24 +59,32 @@ function comparar_versiones() {
 function descomprimir() {
 	var defer = Q.defer();
 	var zipTempPath = path.join(__dirname ,'./new' + local.version + '.zip');
-	zip_getter.getZip(options.package_zip_url,zipTempPath)
-	.then(function (zip) {
-			zip.extractAllToAsync(options.installDir, true, function (error) {
-				defer.resolve(borrarZip(zipTempPath));
-				if(error) defer.reject(error);
+	peticion_actual = zip_getter.getZip(options.package_zip_url,zipTempPath);
+	peticion_actual.then(function (zip) {
+			zip.extractAllToAsync(options.installDir, true, function (error) {				
+				if(error)
+				{ 
+					defer.reject(error);
+				}else{
+					defer.resolve(borrarZip(zipTempPath));
+				}
 			});
 		},function (error) {
 			defer.reject(error);
 		}, function (progress) {
 			defer.notify({
 				percent: progress.percent,
-				formated_speed: speed_formatter.toHuman(progress.speed)
+				formated_speed: speed_formatter.toHuman(progress.speed),
+				remaining_time: progress.remaining_time
 			});
 		});	
 	return defer.promise;
 }
 function abortar(){
-	zip_getter.abort();
+	if(peticion_actual)
+	{
+		peticion_actual._extra.abortar();
+	}
 }
 function borrarZip(zipTempPath) {
 	var defer = Q.defer();

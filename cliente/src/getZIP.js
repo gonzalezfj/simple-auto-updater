@@ -34,28 +34,34 @@ var getHTTPZip = function(zip_url,zip_path) {
      */
     var file_url = zip_url;
     var defer = Q.defer();
-    peticion_actual = progress(request(file_url));
+    peticion_actual = progress(request(file_url), {
+        throttle: 500
+    });
     peticion_actual.on('progress', onProgress)
     .on('end', endPetition)
     .on('error', onError)
     .pipe(fs.createWriteStream(zip_path));
     
-    return defer.promise;
     /**
      * Finaliza abruptamente la descarga actual
      */
-    self.abort = function () {
-        peticion_actual.abort();
-    }
+    defer.promise._extra = {
+        abortar: function(){
+            peticion_actual.abort();
+            defer.reject("Cancelado");
+        }
+    };
+    return defer.promise;
     /**
      * Indica el progeso de la descarga
      */
     function onProgress(state) {
-        var endTime = new Date();
-        var elapsed = 0.001*(endTime - self.time_start);
+        var elapsed = 0.001 * ((new Date()) - self.time_start);
+        var _remaining_time = ((100 - state.percent) * elapsed) / state.percent;
         var progress = {
             percent: state.percent,
-            speed: (state.total * state.percent * 0.01) / elapsed
+            speed: (state.total * state.percent * 0.01) / elapsed,
+            remaining_time: Math.round(_remaining_time)
         };
         defer.notify(progress);
     }
