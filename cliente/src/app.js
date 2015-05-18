@@ -24,7 +24,7 @@ function init(file_config) {
 		};
 		defer.resolve();
 	} catch (error) {
-		return defer.reject(error);
+		defer.reject(error);
 	}
 	return defer.promise;
 };
@@ -33,23 +33,23 @@ function init(file_config) {
  */
 function comparar_versiones() {
 	var defer = Q.defer();
-	try {
+	try {		
 		//CHECK LOCAL VERSION
-		local = require(options.local_package_json);	
+		local = require(options.local_package_json);
 	} catch (error) {
-		return defer.reject(error);		
+		defer.reject(error);		
 	}	
 	//CHECK REMOTE VERSION	
 	version_getter.checkNewVersion(options.remote_url_package_json)
 	.then(function (remote) {
 		if(remote.version > local.version)
 		{
-			return defer.resolve(true);
+			defer.resolve(true);
 		}else{
-			return defer.resolve(false);
+			defer.resolve(false);
 		}
 	}, function (error) {
-		return defer.reject(error);
+		defer.reject(error);
 	});
 	return defer.promise;
 }
