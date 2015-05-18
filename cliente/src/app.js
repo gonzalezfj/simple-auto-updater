@@ -15,12 +15,12 @@ function init(file_config) {
 	var defer = Q.defer();
 	try {		
 		var _file_config = file_config || './config.json';
-		nconf.use('file', { file: path.join(__dirname, _file_config ) });	
+		nconf.use('file', { file: _file_config  });	
 		options = {
-			local_package_json: path.join(__dirname, nconf.get('local_package_json')),
+			local_package_json: nconf.get('local_package_json'),
 			remote_url_package_json: nconf.get('remote_url_package_json'),
 			package_zip_url: nconf.get('package_zip_url'),
-			installDir: path.join(__dirname, nconf.get('installDir'))
+			installDir: nconf.get('installDir')
 		};
 		defer.resolve();
 	} catch (error) {
