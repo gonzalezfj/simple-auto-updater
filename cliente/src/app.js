@@ -56,10 +56,10 @@ function comparar_versiones() {
 /**
  * Descarga y Descomprime la nueva versión
  */
-function descomprimir() {
+function actualizar() {
 	var defer = Q.defer();
 	var zipTempPath = path.join(__dirname ,'./new' + local.version + '.zip');
-	peticion_actual = zip_getter.getZip(options.package_zip_url,zipTempPath);
+	peticion_actual = zip_getter.getZip(options.package_zip_url + './new' + local.version + '.zip',zipTempPath);
 	peticion_actual.then(function (zip) {
 			zip.extractAllToAsync(options.installDir, true, function (error) {				
 				if(error)
@@ -99,4 +99,4 @@ function borrarZip(zipTempPath) {
 module.exports.Init = init;
 module.exports.abortar = abortar;
 module.exports.comparar_versiones = comparar_versiones;
-module.exports.descomprimir = descomprimir;
+module.exports.actualizar = actualizar;

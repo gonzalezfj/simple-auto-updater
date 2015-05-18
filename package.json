@@ -1,11 +1,11 @@
 {
   "name": "simple-auto-updater",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Es un pequeño script para hacer actualizaciones automaticas, pensado para correr en nw.js sobre linux, OSX y windows",
-  "main": "src/app.js",
+  "main": "cliente/src/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "test": "mocha test/getZIP_test.js"
+    "start": "node cliente/src/app.js",
+    "test": "mocha cliente/test/getZIP_test.js"
   },
   "author": "Gonzalez Facundo J",
   "license": "ISC",

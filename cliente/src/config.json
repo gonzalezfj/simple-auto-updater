@@ -1,6 +1,6 @@
 {	
 	"local_package_json": "../package.json",
 	"remote_url_package_json": "http://localhost/package.json",
-	"package_zip_url": "http://gonzalezfj.com.ar/textos.zip",
+	"package_zip_url": "http://gonzalezfj.com.ar/",
 	"installDir": "../../example_app"
 }
