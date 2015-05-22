@@ -34,15 +34,15 @@ npm install simple-auto-updater
 Un simple ejemplo
 ```
 var updater = require('simple-auto-updater');
-
-updater.Init();
+//Carga el archivo de configuracion personal
+updater.Init(process.cwd() + '/config.json')
 //Verficar por una nueva version
 .then(updater.comparar_versiones)
 .then(function(resultado){
     //Una nueva version esta disponible
     if(resultado){
-        //Descarga y descomprime el paquete
-        updater.descomprimir().then(function(){
+        //Realiza la actualización (Descarga y descomprime el paquete)
+        updater.actualizar().then(function(){
             console.log("actualizado con éxito");
         },function(e){
             console.log(e);//algo salió mal
