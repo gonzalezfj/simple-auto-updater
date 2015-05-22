@@ -1,7 +1,7 @@
 ///<reference path="typings/node/node.d.ts" />
 ///<reference path="typings/q.d.ts" />
 var request = require('request');
-var Q = require('Q');
+var Q = require('q');
 /**
  * Retorna un json de la ´version_url´
  */

@@ -4,7 +4,7 @@ var request = require('request');
 var fs = require('fs');
 var progress = require('request-progress');
 var url = require('url');
-var Q = require('Q');
+var Q = require('q');
 
 /**
  * getHTTPZip

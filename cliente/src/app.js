@@ -5,7 +5,7 @@ var path  = require('path');
 var speed_formatter = require('./bandwitdhSpeedHuman.js');
 var nconf = require('nconf');
 var fs = require('fs');
-var Q = require('Q');
+var Q = require('q');
 
 var options,peticion_actual, local;
 /**

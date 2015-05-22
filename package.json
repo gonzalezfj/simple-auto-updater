@@ -1,6 +1,6 @@
 {
   "name": "simple-auto-updater",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Es un pequeño script para hacer actualizaciones automaticas, pensado para correr en nw.js sobre linux, OSX y windows",
   "main": "cliente/src/app.js",
   "scripts": {
